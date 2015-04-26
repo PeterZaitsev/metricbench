@@ -93,7 +93,7 @@ while(true)
   /* Batch Done */
   $tqt=round($batch_time,2);
   $qps=round($batch_queries/$batch_time,3);
-  echo("BATCH TOTAL  $batch_queries in $tqt seconds;  $qps QPS\n");
+  echo("\nBATCH TOTAL  $batch_queries queries in $tqt seconds;  $qps QPS\n\n");
   usleep(round(0,$sleep_between_batches));
 } /* While True */
 
