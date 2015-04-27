@@ -26,6 +26,7 @@ if ($mysqli->connect_error) {
 $start_time=microtime(true);
 while(true)
 {
+  echo("Starting Purge... ");
   $start_time=microtime(true);
   $rows_deleted=0;
   for($i=0;$i<=$num_devices;$i++)
