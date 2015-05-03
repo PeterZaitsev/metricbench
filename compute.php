@@ -19,6 +19,7 @@ $data_inflow=$total_metrics/$period;
 
 $rows_to_keep=$data_inflow*$purge_time;
 
+echo("Running workload version $workload_version\n");
 echo("Storing $total_metrics metrics from  $num_devices devices  ($num_metrics per device)\n");
 printf("This will require system handling %d writes per second;  %d/sec new rows added to the database\n",$wps_needed,$data_inflow);
 printf("%.2fM rows will be kept in the database for retention period of %f hours\n",$rows_to_keep/1000000,$purge_time/3600);
