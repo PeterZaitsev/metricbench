@@ -28,21 +28,19 @@ function generate_multi_insert($device_id)
 
 #  $num_metrics=2;  /*Debug */
 
-/* We assume $num_metrics come in the batch however they are random */
+/* We assume $num_metrics come in the batch  */
 
   $ts=((int)(time()/$period))*$period;
   $val=rand(0,100);
   $s="INSERT INTO metrics (period,device_id,metric_id,cnt,val) values ";
+  $sql=array();
   for($i=1;$i<=$num_metrics;$i++)
   {
-   /* Random metrics break queries. Do not do it */
-   /*  $m=rand(1,$max_metric);  */
-    $m=$i;
     $val=rand(0,$max_value);
-    $s=$s."(from_unixtime($ts),$device_id,$m,1,$val),";
+    $sql[]="(from_unixtime($ts),$device_id,$i,1,$val)";
   }
-  $s=rtrim($s,',');   
-  $s=$s." on duplicate key update cnt=cnt+1,val=val+values(val);";
+  /* Generate statement from associative array in one go */
+  $s=$s.implode(',',$sql)." on duplicate key update cnt=cnt+1,val=val+values(val);";
 #  echo("$s\n");
   return $s;
 }
