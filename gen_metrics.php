@@ -35,7 +35,9 @@ function generate_multi_insert($device_id)
   $s="INSERT INTO metrics (period,device_id,metric_id,cnt,val) values ";
   for($i=1;$i<=$num_metrics;$i++)
   {
-    $m=rand(1,$max_metric);
+   /* Random metrics break queries. Do not do it */
+   /*  $m=rand(1,$max_metric);  */
+    $m=$i;
     $val=rand(0,$max_value);
     $s=$s."(from_unixtime($ts),$device_id,$m,1,$val),";
   }
