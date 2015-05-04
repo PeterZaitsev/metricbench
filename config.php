@@ -4,7 +4,7 @@ $workload_version="1.02";
 
 # Configuration for benchmark
 
-$scale=16;
+$scale=9;
 $length_scale=1;   /* Scale length of data store. Store 3 days typically */
 
 /* This is advanced configuration */
@@ -16,8 +16,8 @@ $scale_rt=sqrt($scale);
 
 /* We're looking for metrics to be 100x of number of devices. This is not realistic but it is a good test for handling different cardinality in indexes */
 
-$num_metrics=round(1000*$scale_rt);
-$num_devices=round(10*$scale_rt);
+$num_metrics=round(5000*$scale_rt);
+$num_devices=round(5*$scale_rt);
 
 $max_metric=1000000;   /*Generate random metrics up N items per batch */
 $max_value=1000;   /*Max value generated for metric */
