@@ -47,12 +47,17 @@ if ($mysqli->connect_error) {
 }
 
 
+/* We want to handle devices in the "random" order to illustrate case as they could come to the queue in diferent order*/
+
+$devices=range(1,$num_devices);
 
 $start_time=microtime(true);
 while(true)
 {
+  shuffle($devices);
   $start_time=microtime(true);
-  for($i=0;$i<=$num_devices;$i++)
+  /* Instead of doing for loop we're iterating through shufled array of devices */
+  foreach($devices as $i)
   {  
     $insert_row = $mysqli->query(generate_multi_insert($i));  
     if(!$insert_row){
