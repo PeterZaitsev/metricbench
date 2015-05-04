@@ -85,8 +85,11 @@ while(true)
         die('Error : ('. $mysqli->errno .') '. $mysqli->error);
       }
       $res->free(); 
-      $total_query_time+=microtime(true)-$query_start_time; 
-      usleep(rand(0,$v['sleep']));
+      $query_time=microtime(true)-$query_start_time; 
+      $total_query_time+=$query_time;
+      /* Instead of specifying the time specified in the configuration sleep as much as query has taken... test */
+      /*usleep(rand(0,$v['sleep'])); */
+      usleep(1000000*$query_time);
     }
     /* Given Query Done */
     $qps=round($num/$total_query_time,3);
