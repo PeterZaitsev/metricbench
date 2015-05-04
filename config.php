@@ -1,6 +1,6 @@
 <?php
 
-$workload_version="1.01";
+$workload_version="1.02";
 
 # Configuration for benchmark
 
@@ -18,6 +18,11 @@ $scale_rt=sqrt($scale);
 
 $num_metrics=round(1000*$scale_rt);
 $num_devices=round(10*$scale_rt);
+
+$max_metric=1000000;   /*Generate random metrics up N items per batch */
+$max_value=1000;   /*Max value generated for metric */
+
+
 
 $purge_time=round($length_scale*72*3600);  /* Time in seconds */
 $purge_sleep=300;  /* Sleep between purge rounds */

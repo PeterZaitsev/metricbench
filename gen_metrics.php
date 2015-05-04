@@ -23,14 +23,21 @@ function generate_multi_insert($device_id)
 {
   global $period;
   global $num_metrics;
+  global $max_metric;
+  global $max_value;
+
+#  $num_metrics=2;  /*Debug */
+
+/* We assume $num_metrics come in the batch however they are random */
 
   $ts=((int)(time()/$period))*$period;
   $val=rand(0,100);
   $s="INSERT INTO metrics (period,device_id,metric_id,cnt,val) values ";
   for($i=1;$i<=$num_metrics;$i++)
   {
-    $val=rand(0,100);
-    $s=$s."(from_unixtime($ts),$device_id,$i,1,$val),";
+    $m=rand(1,$max_metric);
+    $val=rand(0,$max_value);
+    $s=$s."(from_unixtime($ts),$device_id,$m,1,$val),";
   }
   $s=rtrim($s,',');   
   $s=$s." on duplicate key update cnt=cnt+1,val=val+values(val);";
