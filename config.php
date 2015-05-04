@@ -14,6 +14,8 @@ $load_period=60;   /* Generate all metrics this period of time */
 
 $scale_rt=sqrt($scale);
 
+/* We're looking for metrics to be 100x of number of devices. This is not realistic but it is a good test for handling different cardinality in indexes */
+
 $num_metrics=round(1000*$scale_rt);
 $num_devices=round(10*$scale_rt);
 
