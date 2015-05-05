@@ -1,11 +1,8 @@
 <?php
 
-$workload_version="1.02";
+$workload_version="1.03";
 
-# Configuration for benchmark
-
-$scale=9;
-$length_scale=1;   /* Scale length of data store. Store 3 days typically */
+require 'local.php';
 
 /* This is advanced configuration */
 
@@ -14,10 +11,10 @@ $load_period=60;   /* Generate all metrics this period of time */
 
 $scale_rt=sqrt($scale);
 
-/* We're looking for metrics to be 100x of number of devices. This is not realistic but it is a good test for handling different cardinality in indexes */
+/* We're looking for devices to be 1000x of metrics. This is not the most realistic but allows us to see how different cardinality indexes behave */
 
-$num_metrics=round(5000*$scale_rt);
-$num_devices=round(5*$scale_rt);
+$num_metrics=round(5*$scale_rt);
+$num_devices=round(5000*$scale_rt);
 
 $max_metric=1000000;   /*Generate random metrics up N items per batch */
 $max_value=1000;   /*Max value generated for metric */
@@ -30,8 +27,6 @@ $purge_sleep=300;  /* Sleep between purge rounds */
 $sleep_between_batches=300*1000000;  /*beetween batches (us) */
 
 
-$host='localhost';
-$user='root';
-$password='';
-$database='metrics';
+
+
 ?>
