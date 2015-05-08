@@ -3,6 +3,7 @@
 We try to go ahead and load all metrics for all devices every seconds. If we fail we generate the warning */
 
 require 'config.php';
+require 'util.php';
 
 function get_metric_data() /* unused */
 {
@@ -48,12 +49,6 @@ function generate_multi_insert($device_id)
 
 /* Main Program Starts Here */
 
-$mysqli =  mysqli_connect($host,$user,$password,$database);
-if ($mysqli->connect_error) {
-    die('Error : ('. $mysqli->connect_errno .') '. $mysqli->connect_error);
-}
-
-
 /* We want to handle devices in the "random" order to illustrate case as they could come to the queue in diferent order*/
 
 $devices=range(1,$num_devices);
@@ -63,22 +58,29 @@ while(true)
 {
   shuffle($devices);
   $start_time=microtime(true);
+  $max_time=0;
   /* Instead of doing for loop we're iterating through shufled array of devices */
   foreach($devices as $i)
   {  
-    $insert_row = $mysqli->query(generate_multi_insert($i));  
-    if(!$insert_row){
-        die('Error : ('. $mysqli->errno .') '. $mysqli->error);
-    }
+    $st=microtime(true);
+    $insert_row = very_safe_query(generate_multi_insert($i));  
+    $l=microtime(true)-$st;
+    if ($l>$max_time)
+     $max_time=$l;
   }
   $stop_time=microtime(true);
   $t=$stop_time-$start_time;
   $tx=round($t,3);
   $total=$num_devices*$num_metrics;
   $mps=round($total/$t);
+  $status='OK';
   echo("$num_devices  DEVICES  $total METRICS in $tx sec;  $mps  Metrics per second\n");
   if ($t>$load_period)   /* Want to be able to do it once per second all the time */
+  {
     echo("WARNING: UNABLE TO KEEP UP!!! \n");
+    $status='UNABLE TO KEEP UP';
+  }
+  log_progress('GEN_DATA',$num_devices,$num_devices*$num_metrics,$t,$max_time,$status);
   $x=$load_period-(microtime(true)-$start_time);  /*Get it again */
   if ($x>0)
    usleep(round($x*1000000)); /*Sleep in microseconds not seconds */
