@@ -1,6 +1,6 @@
 <?php
 
-$workload_version="1.03";
+$workload_version="1.04";
 
 require 'local.php';
 
@@ -9,12 +9,11 @@ require 'local.php';
 $period=60;     /* Period to group by  Should be multiple of $load_period */
 $load_period=60;   /* Generate all metrics this period of time */
 
-$scale_rt=sqrt($scale);
+/* We're scaling number of devices; Keeping 10 same number of metrics per device */
 
-/* We're looking for devices to be 1000x of metrics. This is not the most realistic but allows us to see how different cardinality indexes behave */
 
-$num_metrics=round(5*$scale_rt);
-$num_devices=round(5000*$scale_rt);
+$num_metrics=round(10);
+$num_devices=round(1000*$scale);
 
 $max_metric=1000000;   /*Generate random metrics up N items per batch */
 $max_value=1000;   /*Max value generated for metric */

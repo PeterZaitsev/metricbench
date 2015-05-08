@@ -24,19 +24,19 @@ $queries=array(
            "sleep"=>0.1*1000000),
          "TOPDEV1H" => array(  
            "q"=>'select device_id,min(period),count(*),sum(cnt),sum(val) v from metrics where  metric_id=%2$d and period>date_sub(now(), interval 1 hour) group by device_id  order by v desc limit 10;',
-           "num"=>1000,
+           "num"=>100,
            "sleep"=>0.1*1000000),         
 	 "TOPDEV1D" => array(  
            "q"=>'select device_id,min(period),count(*),sum(cnt),sum(val) v from metrics where  metric_id=%2$d and period>date_sub(now(), interval 1 day) group by device_id  order by v desc limit 10;',
-           "num"=>100,
+           "num"=>10,
            "sleep"=>1*1000000),         
          "TOPM1H" => array(  
            "q"=>'select metric_id,min(period),count(*),sum(cnt),sum(val) v from metrics where  device_id=%d and period>date_sub(now(), interval 1 hour) group by metric_id  order by v desc limit 10;',
-           "num"=>50,
+           "num"=>1000,
            "sleep"=>1*1000000),         
          "TOPM1D" => array(  
            "q"=>'select metric_id,min(period),count(*),sum(cnt),sum(val) v from metrics where  device_id=%d and period>date_sub(now(), interval 1 day) group by metric_id  order by v desc limit 10;',
-           "num"=>5,
+           "num"=>100,
            "sleep"=>10*1000000),         
          "HOURSUMMARY" => array(
            "q"=>'select min(period),count(*),sum(cnt),sum(val) from metrics where period>date_sub(now(), interval 1 hour) group by (unix_timestamp(period) div 60)*60;',
@@ -52,15 +52,9 @@ $queries=array(
 
 
 require 'config.php';
-
+require 'util.php';
 
 /* Main Program Starts Here */
-
-$mysqli =  mysqli_connect($host,$user,$password,$database);
-if ($mysqli->connect_error) {
-    die('Error : ('. $mysqli->connect_errno .') '. $mysqli->connect_error);
-}
-
 
 
 while(true)
@@ -72,6 +66,8 @@ while(true)
   {
     $num=$v['num'];
     $total_query_time=0;
+    $total_rows=0;
+    $max_time=0;
     for($i=0;$i<$v['num'];$i++)
     {
       $device_id=rand(1,$num_devices);
@@ -80,13 +76,15 @@ while(true)
       $q=sprintf($v['q'],$device_id,$metric_id,$rnd);
 #      echo($q."\n");
       $query_start_time=microtime(true);
-      $res = $mysqli->query($q);  
-      if(!$res){
-        die('Error : ('. $mysqli->errno .') '. $mysqli->error);
-      }
+      $res = very_safe_query($q);  
+      $num_rows=$res->num_rows;
+#echo("Rows: $num_rows \n");
       $res->free(); 
       $query_time=microtime(true)-$query_start_time; 
+      if ($query_time>$max_time)  
+         $max_time=$query_time;
       $total_query_time+=$query_time;
+      $total_rows+=$num_rows;
       /* Instead of specifying the time specified in the configuration sleep as much as query has taken... test */
       /*usleep(rand(0,$v['sleep'])); */
       usleep(1000000*$query_time);
@@ -96,6 +94,7 @@ while(true)
     $batch_time+=$total_query_time;
     $batch_queries+=$num;
     $tqt=round($total_query_time,2);
+    log_progress($k,$num,$total_rows,$total_query_time,$max_time,'OK');
     echo("$k: $num queries in $tqt seconds;  $qps QPS\n");
   }
   /* Batch Done */

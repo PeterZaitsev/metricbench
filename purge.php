@@ -4,6 +4,7 @@ In theory different devices can have different purge setting this is why we can'
 In this cript for simplicity we do not do that */
 
 require 'config.php';
+require 'util.php';
 
 
 function generate_purge_device($device_id,$seconds)
@@ -16,12 +17,6 @@ function generate_purge_device($device_id,$seconds)
 
 /* Main Program Starts Here */
 
-$mysqli =  mysqli_connect($host,$user,$password,$database);
-if ($mysqli->connect_error) {
-    die('Error : ('. $mysqli->connect_errno .') '. $mysqli->connect_error);
-}
-
-
 
 $start_time=microtime(true);
 while(true)
@@ -29,16 +24,19 @@ while(true)
   echo("Starting Purge... ");
   $start_time=microtime(true);
   $rows_deleted=0;
+  $max_time=0;
   for($i=0;$i<=$num_devices;$i++)
   {
-    $res = $mysqli->query(generate_purge_device($i,$purge_time));  
-    if(!$res){
-        die('Error : ('. $mysqli->errno .') '. $mysqli->error);
-    }
+    $st=microtime(true);
+    $res = very_safe_query(generate_purge_device($i,$purge_time));  
+    $l=microtime(true)-$st;
+    if ($l>$max_time) 
+      $max_time=$l;
     $rows_deleted+=$mysqli->affected_rows;
   }
   $stop_time=microtime(true);
   $t=$stop_time-$start_time;
+  log_progress('PURGE',$num_devices,$rows_deleted,$t,$max_time,'OK');
   $tx=round($t,3);
   $dps=round($rows_deleted/$t,2);
   echo("$rows_deleted  rows purged  in $tx sec;  $dps  Metrics per second\n");
