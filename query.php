@@ -61,6 +61,8 @@ while(true)
 {
   $batch_time=0;
   $batch_queries=0;
+  $batch_total_rows=0;
+  $batch_max_time=0;
   /* Go through every query pattern */
   foreach($queries as $k=>$v)
   {
@@ -68,6 +70,7 @@ while(true)
     $total_query_time=0;
     $total_rows=0;
     $max_time=0;
+    log_progress('BEGIN',$k,0,0,0,0,'');
     for($i=0;$i<$v['num'];$i++)
     {
       $device_id=rand(1,$num_devices);
@@ -93,14 +96,18 @@ while(true)
     $qps=round($num/$total_query_time,3);
     $batch_time+=$total_query_time;
     $batch_queries+=$num;
+    $batch_total_rows+=$total_rows;
+    if ($max_time>$batch_max_time)
+      $batch_max_time=$max_time;
     $tqt=round($total_query_time,2);
-    log_progress($k,$num,$total_rows,$total_query_time,$max_time,'OK');
+    log_progress('END',$k,$num,$total_rows,$total_query_time,$max_time,'OK');
     echo("$k: $num queries in $tqt seconds;  $qps QPS\n");
   }
   /* Batch Done */
   $tqt=round($batch_time,2);
   $qps=round($batch_queries/$batch_time,3);
   echo("\nBATCH TOTAL  $batch_queries queries in $tqt seconds;  $qps QPS\n\n");
+  log_progress('INFO','BATCH',$batch_queries,$batch_total_rows,$batch_time,$batch_max_time,'OK');
   usleep(round(0,$sleep_between_batches));
 } /* While True */
 

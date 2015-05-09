@@ -46,9 +46,10 @@ function very_safe_query($query)
 
 /* Store progress report into log table */
 
-function log_progress($name,$num_queries,$num_rows,$time_total,$time_max,$status)
+function log_progress($event,$name,$num_queries,$num_rows,$time_total,$time_max,$status)
 {
-  $q="INSERT INTO log (ts,name,num_queries,num_rows,time_total,time_max,status) VALUES (now(),'$name',$num_queries,$num_rows,$time_total,$time_max,'$status');";
+  $pid=getmypid();
+  $q="INSERT INTO log (pid,ts,event,name,num_queries,num_rows,time_total,time_max,status) VALUES ($pid,now(),'$event','$name',$num_queries,$num_rows,$time_total,$time_max,'$status');";
 #  echo($q);
   very_safe_query($q);
 }

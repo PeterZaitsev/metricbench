@@ -57,6 +57,7 @@ $start_time=microtime(true);
 while(true)
 {
   shuffle($devices);
+  log_progress('BEGIN','GEN_DATA',0,0,0,0,'');
   $start_time=microtime(true);
   $max_time=0;
   /* Instead of doing for loop we're iterating through shufled array of devices */
@@ -80,7 +81,7 @@ while(true)
     echo("WARNING: UNABLE TO KEEP UP!!! \n");
     $status='UNABLE TO KEEP UP';
   }
-  log_progress('GEN_DATA',$num_devices,$num_devices*$num_metrics,$t,$max_time,$status);
+  log_progress('END','GEN_DATA',$num_devices,$num_devices*$num_metrics,$t,$max_time,$status);
   $x=$load_period-(microtime(true)-$start_time);  /*Get it again */
   if ($x>0)
    usleep(round($x*1000000)); /*Sleep in microseconds not seconds */

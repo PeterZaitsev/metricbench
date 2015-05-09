@@ -22,6 +22,7 @@ $start_time=microtime(true);
 while(true)
 {
   echo("Starting Purge... ");
+  log_progress('BEGIN','PURGE',0,0,0,0,'');
   $start_time=microtime(true);
   $rows_deleted=0;
   $max_time=0;
@@ -36,7 +37,7 @@ while(true)
   }
   $stop_time=microtime(true);
   $t=$stop_time-$start_time;
-  log_progress('PURGE',$num_devices,$rows_deleted,$t,$max_time,'OK');
+  log_progress('END','PURGE',$num_devices,$rows_deleted,$t,$max_time,'OK');
   $tx=round($t,3);
   $dps=round($rows_deleted/$t,2);
   echo("$rows_deleted  rows purged  in $tx sec;  $dps  Metrics per second\n");
