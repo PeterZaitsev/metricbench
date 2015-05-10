@@ -90,7 +90,8 @@ while(true)
       $total_rows+=$num_rows;
       /* Instead of specifying the time specified in the configuration sleep as much as query has taken... test */
       /*usleep(rand(0,$v['sleep'])); */
-      usleep(1000000*$query_time);
+     /* Sleep in average query time */
+      usleep(rand(0,2*1000000*$query_time));
     }
     /* Given Query Done */
     $qps=round($num/$total_query_time,3);
