@@ -21,7 +21,7 @@ $current_script=1;
 if ($argc==3)
 {
   $total_scripts=$argv[1];
-  $current_scripts=$argv[2];
+  $current_script=$argv[2];
 }
 
 $loader_devices=round($num_devices/$total_scripts);
@@ -31,37 +31,6 @@ $end_device=$start_device+$loader_devices-1;
 
 echo("Started purger $current_script out of $total_scripts handling devices from $start_device to $end_device\n");
 
-
-/* We want to handle devices in the "random" order to illustrate case as they could come to the queue in diferent order*/
-
-/*
-$start_time=microtime(true);
-while(true)
-{
-  shuffle($devices);
-  log_progress('BEGIN','STRESS_LOAD',0,0,0,0,'');
-  $start_time=microtime(true);
-  $max_time=0;
-  foreach($devices as $i)
-  {  
-    $st=microtime(true);
-    $insert_row = very_safe_query(generate_multi_insert($i));  
-    $l=microtime(true)-$st;
-    if ($l>$max_time)
-     $max_time=$l;
-  }
-  $stop_time=microtime(true);
-  $t=$stop_time-$start_time;
-  $tx=round($t,3);
-  $total=$loader_devices*$num_metrics;
-  $mps=round($total/$t);
-  $status='OK';
-  echo("[$current_loader] $loader_devices  DEVICES  $total METRICS in $tx sec;  $mps  Metrics per second\n");
-  log_progress('END','STRESS_LOAD',$num_devices,$num_devices*$num_metrics,$t,$max_time,$status);
-}
-
-$mysqli->close();
-*/
 
 $start_time=microtime(true);
 while(true)
