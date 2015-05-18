@@ -58,7 +58,7 @@ while(true)
   $mps=round($total/$t);
   $status='OK';
   echo("[$current_loader] $loader_devices  DEVICES  $total METRICS in $tx sec;  $mps  Metrics per second\n");
-  log_progress('END','STRESS_LOAD',$num_devices,$num_devices*$num_metrics,$t,$max_time,$status);
+  log_progress('END','STRESS_LOAD',$loader_devices,$loader_devices*$num_metrics,$t,$max_time,$status);
 }
 
 $mysqli->close();

@@ -6,7 +6,8 @@ function generate_multi_insert($device_id)
 {
   global $period;
   global $num_metrics;
-  global $max_metric;
+  global $random_metrics;
+  global $max_metric_value;
   global $max_value;
 
 #  $num_metrics=2;  /*Debug */
@@ -14,13 +15,16 @@ function generate_multi_insert($device_id)
 /* We assume $num_metrics come in the batch  */
 
   $ts=((int)(time()/$period))*$period;
-  $val=rand(0,100);
   $s="INSERT INTO metrics (period,device_id,metric_id,cnt,val) values ";
   $sql=array();
   for($i=1;$i<=$num_metrics;$i++)
   {
+    if ($random_metrics)
+      $metric=rand(1,$max_metric_value);
+    else
+      $metric=$i;
     $val=rand(0,$max_value);
-    $sql[]="(from_unixtime($ts),$device_id,$i,1,$val)";
+    $sql[]="(from_unixtime($ts),$device_id,$metric,1,$val)";
   }
   /* Generate statement from associative array in one go */
   $s=$s.implode(',',$sql)." on duplicate key update cnt=cnt+1,val=val+values(val);";

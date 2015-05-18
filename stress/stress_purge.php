@@ -55,7 +55,7 @@ while(true)
   $dps=round($rows_deleted/$t,2);
   echo("[$current_script] $rows_deleted  rows purged  in $tx sec;  $dps  Metrics per second\n");
   if ($rows_deleted==0)
-    usleep(10*1000000); /* In unlikely case there is nothing to do sleep 10 sec to avoid resource waste */
+    usleep(round(($t+10)*1000000)); /* In unlikely case there is nothing to do sleep for the time round took + 10 seconds */
 }
 
 $mysqli->close();

@@ -15,9 +15,9 @@ $load_period=60;   /* Generate all metrics this period of time */
 $num_metrics=round(10);
 $num_devices=round(1000*$scale);
 
-$max_metric=1000000;   /*Generate random metrics up N items per batch */
-$max_value=1000;   /*Max value generated for metric */
-
+/* The normal version uses sequential metrics rather than random ones */
+$random_metrics=0;
+$max_metric_value=1000000;
 
 
 $purge_time=round($length_scale*72*3600);  /* Time in seconds */
