@@ -6,6 +6,5 @@ CREATE TABLE `metrics` (
   `val` double DEFAULT NULL,
   PRIMARY KEY (`period`,`device_id`,`metric_id`),
   KEY `metric_id` (`metric_id`,`period`),
-  KEY `device_id` (`device_id`,`period`),
-  KEY `period` (`period`)
+  KEY `device_id` (`device_id`,`period`)
 ) ENGINE=TokuDB DEFAULT CHARSET=latin1;
