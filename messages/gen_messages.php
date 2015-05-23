@@ -23,25 +23,41 @@ require '../conf/stress_config.php';
 require '../lib/util.php';
 require '../lib/metrics.php';
 
-$id=1;
+$total_loaders=1;
+$current_loader=1;
+
+/* Optionally run with parameters if we're doing it in parallel*/
+if ($argc==3)
+{
+  $total_loaders=$argv[1];
+  $current_loader=$argv[2];
+}
+
+
+echo("Started loader $current_loader out of $total_loaders\n");
+
+
+
+$id=$current_loader; /* Start with this value */
 while(true)
 {
   $code=rand(0,$max_error_id);
   $val=rand(1,10000); /*Random message modifier*/ 
-  $device_id=rand(1,1000000);  /* Use different here ? */
+  $device_id=rand(1,1000000000);  /* Use different here ? */
   $object='MAIN';
   $msg=posix_strerror($code)." for $device_id at $object:$val";
   $q="INSERT INTO messages (id,ts,device_id,object,error_code,message) values ($id,now(),$device_id,'$object',$code,'$msg');";
   #echo "$q\n";;
   very_safe_query($q);
-  $id++;
+  $id+=$total_loaders;
   if ($id>1000000000)   /* Assume no more than 1bil inserts per second */
-    $id=1;
+    $id=$current_loader;
 }
 
-
-
 exit;
+
+
+
 echo("Started loader $current_loader out of $total_loaders handling devices from $start_device to $end_device\n");
 
 
