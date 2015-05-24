@@ -11,20 +11,17 @@ Devices report error messages for "objects" for example lines of code in the fil
 $max_error_id=120;
 
 
-/*
-for($i=0; $i<$max_error_id; $i++)
-{
- echo $i.' : '.posix_strerror($i)."\n";
-}
-*/
-
-
 require '../conf/stress_config.php';
 require '../lib/util.php';
 require '../lib/metrics.php';
 
+$object_prefixes=array('cpu','disk','controller','network','error','os','internet','protocol','nsa');
+$object_suffixes=array('read','write','start','stop','system','annotate','join');
+
+
 $total_loaders=1;
 $current_loader=1;
+
 
 /* Optionally run with parameters if we're doing it in parallel*/
 if ($argc==3)
@@ -33,19 +30,17 @@ if ($argc==3)
   $current_loader=$argv[2];
 }
 
-
 echo("Started loader $current_loader out of $total_loaders\n");
-
 
 
 $id=$current_loader; /* Start with this value */
 while(true)
 {
   $code=rand(0,$max_error_id);
-  $val=rand(1,10000); /*Random message modifier*/ 
-  $device_id=rand(1,1000000000);  /* Use different here ? */
-  $object='MAIN';
-  $msg=posix_strerror($code)." for $device_id at $object:$val";
+  $val=rand(1,1000); /*Random message modifier*/ 
+  $device_id=rand(1,100000);  /* Use different here ? */
+  $object='com.'.$object_prefixes[array_rand($object_prefixes)].'.'.$object_suffixes[array_rand($object_suffixes)];
+  $msg=posix_strerror($code)." for device $device_id at $object:$val";
   $q="INSERT INTO messages (id,ts,device_id,object,error_code,message) values ($id,now(),$device_id,'$object',$code,'$msg');";
   #echo "$q\n";;
   very_safe_query($q);
